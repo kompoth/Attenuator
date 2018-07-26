@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-import ctypes as ct
+from ctypes import *
 
 if sys.version_info >= (3,0):
     import urllib.parse
@@ -62,15 +62,18 @@ def set_pos(device_id, pos_wheel1, pos_wheel2):
 
 
 if __name__ == "__main__":
-    att_id = lib.open_device(b'xi-com:\\\\.\\COM63')
+    att_id = lib.open_device(b'xi-com:\\\\.\\'+(bytes(sys.argv[1], 'utf8')))
     print("ID: ", att_id)
     lib.command_homezero(att_id)
     print("Calibration...")
     lib.command_wait_for_stop(att_id, 10)
     print("First window number: ")
     wnd1 = input()
+    if wnd1 == "exit":
+        c_id = c_int(att_id)
+        lib.close_device(byref(c_id))
+        sys.exit()
     print("Second window number: ")
     wnd2 = input()
     set_pos_calb(att_id, int(wnd1), int(wnd2))
     lib.command_wait_for_stop(att_id)
-	lib.close_device(att_id)

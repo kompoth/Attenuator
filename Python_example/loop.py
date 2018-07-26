@@ -33,19 +33,25 @@ def loop_set_pos_calb(device_id):
 	dif = 0
 	while 1:
 		print("First window number: ")
-		wnd1 = int(input()) - 1
+		wnd = input()
+		if wnd == "exit":
+			c_id = c_int(att_id)
+			lib.close_device(byref(c_id))
+			sys.exit()
+		wnd1 = int(wnd) - 1
+
 		print("Second window number: ")
 		wnd2 = int(input()) - 1
+
+		if wnd1 < 0 or wnd2 < 0 or wnd1 > 7 or wnd2 > 7:
+			print("Wrong window number\n")
+			continue
 
 		if dif != 0:
 			print("Setting initial state...")
 			spin = 8
 			lib.command_move_calb(att_id, ct.c_float(spin), byref(calb))
 			lib.command_wait_for_stop(att_id, 10)
-			# if dif < 0:
-			# 	print("SECOND SPIN++++++++++++++++++++++++")
-			# 	lib.command_move_calb(att_id, ct.c_float(spin), byref(calb))
-			# 	lib.command_wait_for_stop(att_id, 10)
 			lib.command_zero(att_id)
 			lib.command_wait_for_stop(att_id, 10)
 			print(" Done\n")
@@ -61,8 +67,7 @@ def loop_set_pos_calb(device_id):
 
 
 if __name__ == "__main__":
-   
-	att_id = lib.open_device(b'xi-com:\\\\.\\COM63')
+	att_id = lib.open_device(b'xi-com:\\\\.\\'+(bytes(sys.argv[1], 'utf8')))
 	print("ID: ", att_id)
 	print("Calibration...")
 	lib.command_homezero(att_id)
