@@ -42,14 +42,14 @@ except OSError as err:
 """ Complicated variant with transition to user units """
 def set_pos_calb(device_id, pos_wheel1, pos_wheel2):
 	calb = calibration_t()
-	calb.A = ct.c_double(0.04)             # 1 переход = 25 шагов
+	calb.A = c_double(0.04)             # 1 переход = 25 шагов
 	calb.MicrostepMode = 1                 # режим без разделения на микрошаги
 	lib.command_wait_for_stop(att_id, 10)  # задержка, чтобы команды не перекрывались
-	lib.command_move_calb(att_id, ct.c_float(pos_wheel2), byref(calb))
+	lib.command_move_calb(att_id, c_float(pos_wheel2), byref(calb))
 	lib.command_wait_for_stop(att_id, 10)
 	if pos_wheel1 > pos_wheel2:            # иначе колесо-1 будет цеплять колесо-2
 		pos_wheel1 = pos_wheel1 - 8
-	lib.command_move_calb(att_id, ct.c_float(pos_wheel1), byref(calb))
+	lib.command_move_calb(att_id, c_float(pos_wheel1), byref(calb))
 
 """ or we can just multiply by 25 """
 def set_pos(device_id, pos_wheel1, pos_wheel2):
